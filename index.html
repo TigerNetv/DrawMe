@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>DrawMe</title>
+    <style>
+      canvas {
+        padding: 0;
+        margin: auto;
+        display: block;
+        position: relative;
+        top: -10px;
+        bottom: 0;
+        left: -10px;
+        right: 0;
+        background-color: #333;
+      }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+
+  <body style="overflow: hidden; /* Hide scrollbars */">
+    <canvas onmousemove="" width="5000" height="5000" >
+    </canvas> 
+    
+    <script>
+      var canvas = document.querySelector("canvas");
+      var context = canvas.getContext("2d");
+      var Cursor_X;
+      var Cursor_Y;
+
+      const socket = io();
+
+
+      document.addEventListener('mousemove', onMouseUpdate, false);
+      document.addEventListener('mouseenter', onMouseUpdate, false);
+      document.addEventListener("mousedown", onMouseUpdate, false);
+
+      
+
+      // Draw func
+      function paintCoordinate(Cursor_X, Cursor_Y) {
+        var color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+        context.fillStyle = color;
+        context.fillRect(Cursor_X - 5, Cursor_Y - 5, 15, 15);
+      }
+
+      // Live Show console.logs !
+      function livecords(Cursor_X, Cursor_Y) {
+        console.log(Cursor_X, Cursor_Y)
+      }
+      
+      // Main Event func
+      function onMouseUpdate(e) {
+            Cursor_X = e.pageX;
+            Cursor_Y = e.pageY;
+            var flags = e.buttons !== undefined ? e.buttons : e.which;
+            down = (flags & 1) === 1;
+            if (down) { // Acrive Hold mouse
+                paintCoordinate(Cursor_X, Cursor_Y, 15, 15);
+                socket.emit("info", [Cursor_X, Cursor_Y]);
+            }
+      }
+    </script>
+
+
+  </body>
+</html>
