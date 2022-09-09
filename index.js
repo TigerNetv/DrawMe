@@ -6,18 +6,19 @@ const port = process.env.PORT || 3000;
 
 
 
-
-
 app.get('/', (req, res) => {
   console.log('Client Connected !')
   res.sendFile(__dirname + '/index.html');
 });
 
 io.on("connection", (socket) => {
-  socket.on("info", (arg) => {
-    console.log(arg); // world
+  socket.on("info", (data) => {
+    console.log(data[0], data[1]);
+    io.emit("livexy", (data));
   });
 });
+
+
 
 http.listen(port, () => {
   console.log(`Socket.IO server running at http://localhost:${port}/`);
