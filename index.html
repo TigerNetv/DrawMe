@@ -15,7 +15,7 @@
         background-color: #333;
       }
     </style>
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
   </head>
 
   <body style="overflow: hidden; /* Hide scrollbars */">
@@ -23,32 +23,29 @@
     </canvas> 
     
     <script>
+      
       var canvas = document.querySelector("canvas");
       var context = canvas.getContext("2d");
-      var Cursor_X;
-      var Cursor_Y;
+
 
       const socket = io();
-
+      var color = '#009900';
+      var data;
 
       document.addEventListener('mousemove', onMouseUpdate, false);
       document.addEventListener('mouseenter', onMouseUpdate, false);
       document.addEventListener("mousedown", onMouseUpdate, false);
 
-      
 
       // Draw func
       function paintCoordinate(Cursor_X, Cursor_Y) {
-        var color = '#' + Math.floor(Math.random() * 16777215).toString(16);
+       
         context.fillStyle = color;
         context.fillRect(Cursor_X - 5, Cursor_Y - 5, 15, 15);
       }
 
       // Live Show console.logs !
-      function livecords(Cursor_X, Cursor_Y) {
-        console.log(Cursor_X, Cursor_Y)
-      }
-      
+
       // Main Event func
       function onMouseUpdate(e) {
             Cursor_X = e.pageX;
@@ -60,6 +57,13 @@
                 socket.emit("info", [Cursor_X, Cursor_Y]);
             }
       }
+
+
+      socket.addEventListener("livexy", (data) => {
+        paintCoordinate(data[0], data[1]);
+        console.log(data);
+      });
+
     </script>
 
 
